@@ -96,8 +96,9 @@ jobs:
           # Fill the changelog file with the commits since the compare point
           git log --pretty=format:"- %s" "$compare_point".."$current_tag" >> CHANGELOG.md
 
-          # Set the complete changelog URL
-          echo >> CHANGELOG.md
+          # Add a blank line for formatting
+          echo "" >> CHANGELOG.md
+
           echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/${compare_point}...${current_tag}" >> CHANGELOG.md
 
           echo "Changelog built successfully."
