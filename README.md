@@ -1,1 +1,1 @@
-Auto Changelog
+# Auto Changelog 🤖
