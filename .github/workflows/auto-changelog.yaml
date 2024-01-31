@@ -41,11 +41,11 @@ jobs:
           compare_tag=""
 
           # Check if version_tag is a release candidate format (e.g., vX.Y.Z-rc.W)
-          if [[ "$version_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
+          if [[ "$version_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$]]; then
             # Filter for tags that match vX.Y.Z-rc.W or vX.Y.Z
             echo "Searching for release candidate and production tags..."
             for tag in "${tags[@]}"; do
-              if [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]]; then
+              if [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ && "$tag" != "$version_tag"]]; then
                 compare_tag="$tag"
                 break
               fi
@@ -54,7 +54,7 @@ jobs:
             # For production releases (vX.Y.Z), filter only vX.Y.Z tags
             echo "Searching for production tags only..."
             for tag in "${tags[@]}"; do
-              if [[ "$tag" == v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              if [[ "$tag" == v[0-9]+\.[0-9]+\.[0-9]+$ && "$tag" != "$version_tag"]]; then
                 compare_tag="$tag"
                 break
               fi
