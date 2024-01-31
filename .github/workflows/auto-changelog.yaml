@@ -35,40 +35,36 @@ jobs:
           # Extract the input version tag
           version_tag="${{ inputs.version_tag }}"
 
-          # Check if the version tag is valid
-
           # Initialize compare_tag variable
           compare_tag=""
 
           # Check if version_tag is a release candidate format (e.g., vX.Y.Z-rc.W)
-          if [[ "$version_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$]]; then
+          if [[ "$version_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
             # Filter for tags that match vX.Y.Z-rc.W or vX.Y.Z
-            echo "Searching for release candidate and production tags..."
-            for tag in "${tags[@]}"; do
-              if [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ && "$tag" != "$version_tag"]]; then
+            for tag in $tags; do
+              if [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ && "$tag" != "$version_tag" ]]; then
                 compare_tag="$tag"
                 break
               fi
             done
           else
             # For production releases (vX.Y.Z), filter only vX.Y.Z tags
-            echo "Searching for production tags only..."
-            for tag in "${tags[@]}"; do
-              if [[ "$tag" == v[0-9]+\.[0-9]+\.[0-9]+$ && "$tag" != "$version_tag"]]; then
+            for tag in $tags; do
+              if [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ && "$tag" != "$version_tag" ]]; then
                 compare_tag="$tag"
                 break
               fi
             done
           fi
 
-          # Check if compare tag is found
+          # If no previous tag is found, use the initial commit
           if [ -z "$compare_tag" ]; then
             echo "No previous tag found. Using the initial commit for comparison."
             compare_tag=$(git rev-list --max-parents=0 HEAD)
           fi
 
           # Set the compare_tag as output
-          echo "Compare tag: $compare_tag"
+          echo "Compare tag (or initial commit): $compare_tag"
           echo "compare_tag=$compare_tag" >> $GITHUB_OUTPUT
 
       - name: Build changelog
